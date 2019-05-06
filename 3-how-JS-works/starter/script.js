@@ -1,20 +1,22 @@
 ///////////////////////////////////////
 // Lecture: Hoisting
 
+calculateAge(1965);
+
+function calculateAge(year){
+    console.log(2019 - year);
+}
+
+calculateAge(1998);
 
 
 
 
+var retirement = function(year){
+    console.log(65 = (2019 - year));
+}
 
-
-
-
-
-
-
-
-
-
+retirement(1956);
 
 
 ///////////////////////////////////////
@@ -68,7 +70,11 @@ function third() {
 // Lecture: The this keyword
 
 
+//in a function this -> object (window)
 
+//in a method this -> object
+
+//in a function inside a method this -> window
 
 
 
