@@ -1,15 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Asynchronous JavaScript</title>
 </head>
+
 <body>
     <h1>Asynchronous JavaScript</h1>
     <script>
-        
+        // Asynchronous Code
+        const second = () => {
+            setTimeout(() => {
+                console.log('Second');
+            }, 20);
+        }
+
+        const first = () => {
+            console.log('Hey there');
+            second();
+            console.log('The end');
+        }
+
+        first();
+
+        // Call back Hell
+        /*function getRecipe() {
+            setTimeout(() => {
+                const recipeID = [523, 883, 432, 974];
+                console.log(recipeID);
+
+                setTimeout((id) => {
+                    const recipe = {title: 'Fresh tomato pasta', publisher: 'Jonas'};
+                    console.log(`${id}: ${recipe.title}`);
+
+                    setTimeout(publisher => {
+                        const recipe = {title: 'Italian Pizza', publisher: 'Jonas'};
+                        console.log(recipe);
+                    }, 100, recipe.publisher);
+
+                }, 100, recipeID[2]);
+
+            }, 100);
+        }
+        getRecipe();*/
+
+        // Promises
+        const getIDs = new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve([523, 883, 432, 974]); //or reject
+            }, 1500);
+        });
+
+        const getRecipe = recID => {
+            return new Promise((resolve, reject) => {
+                setTimeout(ID => {
+                    const recipe = { title: 'Fresh tomato pasta', publisher: 'Jonas' };
+                    resolve(`${ID}: ${recipe.title}`);
+                }, 15, recID);
+            });
+        };
+
+        const getRelated = publisher => {
+            return new Promise((resolve, reject) => {
+                setTimeout(pub => {
+                    const recipe = { title: 'Italian Pizza', publisher: 'Jonas' };
+                    resolve(`${pub}: ${recipe.title}`);
+                }, 100, publisher);
+            });
+        };
+
+        /*getIDs
+            .then(IDs => { //in then, our argument is our result
+                console.log(IDs);
+                return getRecipe(IDs[2]);
+            })
+            .then(recipe => {
+                console.log(recipe);
+                return getRelated('Jonas');
+            })
+            .then(recipe => {
+                console.log(recipe);
+            })
+            .catch(error => { //in case of rejection
+                console.log(error);
+            });*/
+
+
+            async function getRecipeAW() {
+                const IDs = await getIDs;
+                const recipe = await getRecipe(IDs[2]);
+                const related = await getRelated('Jonas Schmedtmann');
+
+                return recipe;
+            }
+            getRecipeAW().then(result => console.log(`${result} is the best ever`));
+
+
+            function getWeather(woeid) {
+                fetch(`https://crossorigin.me/https://www.metaweather.com/api/location/${woeid}/`)
+                    .then(result => {
+                        console.log(result);
+                        return result.json();
+                    })
+                    .then(data => {
+                        console.log(data);
+                        const today = data.consolidated_weather[0];
+                        console.log(`Temperatures in ${data.title} stay between ${today.min_temp} and ${today.max_temp}.`);
+                    })
+                    .catch(error => console.log(error)
+                    );
+            }
+
+            getWeather(2487956);
+            getWeather(4441846);
+
+            async function getWeatherAW(woeid){
+                try {
+                    const result = await fetch(`https://crossorigin.me/https://www.metaweather.com/api/location/${woeid}/`);
+                    const data = await result.json();
+                    const today = data.consolidated_weather[0];
+                    console.log(`Temperatures in ${data.title} stay between ${today.min_temp} and ${today.max_temp}.`);
+                    return data;
+                } catch(error){
+                    alert(error);
+                }
+            }
+            getWeatherAW(2487956);
+            let dataLondon;
+            getWeatherAW(4441846).then(data => { 
+                dataLondon = data;
+                console.log(dataLondon);
+            });
     </script>
 </body>
+
 </html>
